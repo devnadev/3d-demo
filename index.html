@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.155.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.155.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>3D Model Generator</h1>
+        <p>Capture a hand-drawn sketch, enhance it with AI, and generate a interactive 3D model.</p>
+    </header>
+
+    <section id="camera-section">
+        <h2>Step 1: Capture Sketch</h2>
+        <video id="cameraPreview" autoplay playsinline></video>
+        <div class="button-group">
+            <button id="toggleCameraBtn">Open Camera</button>
+            <button id="captureBtn">Capture Snapshot</button>
+        </div>
+        <img id="capturedImg" alt="Captured Snapshot" style="display: none;">
+        <canvas id="captureCanvas" style="display: none;"></canvas>
+    </section>
+
+<!--     <section id="image-gen-section">
+        <h2>Step 2: Enhance Image</h2>
+        <input type="text" id="promptInput" placeholder="Enter prompt (e.g., Turn this sketch into a realistic nano banana)">
+        <button id="generateImageBtn">Generate Enhanced Image</button>
+        <img id="generatedImg" alt="Generated Image" style="display: none;">
+    </section> -->
+
+<section id="image-gen-section">
+  <h2>Step 2: Enhance Image</h2>
+
+  <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+    <input type="text" id="promptInput"
+           placeholder="Enter prompt (e.g., Turn this sketch into a realistic nano banana)"
+           style="flex:1; min-width:220px; padding:8px; border-radius:6px; border:1px solid #e6e9ef;">
+    <button id="generateImageBtn" type="button" style="padding:8px 12px; border-radius:6px; background:#0a74ff; color:#fff; border:0; cursor:pointer;">
+      Generate Enhanced Image
+    </button>
+  </div>
+
+  <!-- Preset prompt buttons -->
+  <div class="preset-container" style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
+     <button type="button" class="preset-btn"
+      data-prompt="Turn this sketch into a photorealistic 3D animal — a small nano-banana creature with soft fur and expressive eyes. Place it on a seamless pure white background with studio three-point lighting and a subtle soft shadow. Camera: 3/4 front, focal length ~50mm. Output model: clean topology, UV-unwrapped, PBR textures (albedo, normal, roughness) at 2048px, optimized for web (.glb).">
+      🐾 3D Animal
+    </button>
+
+    <!-- 3D Plant -->
+    <button type="button" class="preset-btn"
+      data-prompt="Convert this sketch into a stylized 3D plant: a small potted nano-banana plant with broad leaves. Render on a seamless white background with soft studio lighting and a faint ground shadow. Camera: front view, neutral 35–50mm lens. Output: low-to-mid poly mesh, clean UVs, baked ambient occlusion, PBR textures (albedo, roughness, normal) 1024–2048px, single .glb export.">
+      🌱 3D Plant
+    </button>
+
+ <button type="button" class="preset-btn"
+    data-prompt="Turn this sketch into a clean 3D object — a stylized nano-banana inspired everyday item. Place on a pure white background with soft even lighting and subtle contact shadow. Output: low-poly friendly geometry, UV-unwrapped, optimized for AR/VR. PBR textures (albedo, metallic, roughness, normal) at 1024–2048px. Export as lightweight .glb.">
+    📦 3D Object
+  </button>
+
+  <!-- 3D Tool -->
+  <button type="button" class="preset-btn"
+    data-prompt="Generate a 3D model of a tool based on this sketch — styled with nano-banana aesthetics. Present on a seamless white background with overhead studio lighting. Output: functional mid-poly mesh, clean UVs, PBR textures (metallic, roughness, albedo) optimized for real-time rendering. Export single .glb file.">
+    🛠 3D Tool
+  </button>
+
+  <!-- 3D Clothes -->
+  <button type="button" class="preset-btn"
+    data-prompt="Transform this sketch into a 3D clothing item — designed with nano-banana inspired colors and fabric. Render against a seamless pure white background with neutral soft lighting. Output: quad-based topology suitable for cloth simulation, UV-unwrapped, fabric PBR textures (albedo, normal, roughness). Export clean .glb with correct scale.">
+    👕 3D Clothes
+  </button>
+  
+    <!-- 3D Anime Character -->
+    <button type="button" class="preset-btn"
+      data-prompt="Transform this sketch into a stylized 3D anime character inspired by nano-banana aesthetics. Use a white background, flat studio lighting optimized for toon/cel shading, and a front/three-quarter neutral pose. Output: quad-based topology suitable for rigging, clean UVs, separate texture maps (albedo, normals, 2048px). Export as rigged .glb with baked facial blendshapes.">
+      🎎 3D Anime Character
+    </button>
+
+    <button type="button" id="presetClearBtn" style="background:#eee;color:#333;border:1px solid #ddd;">
+      Clear
+    </button>
+  </div>
+
+  <img id="generatedImg" alt="Generated Image" style="display: none; margin-top:10px;">
+</section>
+
+    <section id="model-gen-section">
+        <h2>Step 3: Generate 3D Model</h2>
+        <button id="generate3DBtn">Generate 3D Model</button>
+        <div id="viewer" class="viewer-container"></div>
+    </section>
+
+    <footer>
+        <p id="status">Ready to start. Open the camera to begin.</p>
+    </footer>
+    
+<script>
+  // Wire preset buttons: replace prompt input value, focus the input
+  document.addEventListener('DOMContentLoaded', () => {
+    const promptInput = document.getElementById('promptInput');
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        promptInput.value = btn.dataset.prompt || '';
+        promptInput.focus();
+      });
+    });
+    document.getElementById('presetClearBtn').addEventListener('click', () => {
+      promptInput.value = '';
+      promptInput.focus();
+    });
+  });
+</script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
